@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Ombres du Royaume — Grimoire des règles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0b0a12;
+    --night:#13111d;
+    --night-2:#1b1827;
+    --raise:#221e30;
+    --parchment:#ece3cf;
+    --mist:#9c95ab;
+    --mist-dim:#6f6982;
+    --edge:rgba(208,169,78,.16);
+    --edge-soft:rgba(236,227,207,.08);
+
+    --roy:#d0a94e;         /* Royaume — or */
+    --roy-bright:#ecca79;
+    --om:#c34452;          /* Ombres — sang */
+    --om-bright:#e0707c;
+    --neu:#9f93c8;         /* Neutres — améthyste pâle */
+    --neu-bright:#c3b8e6;
+
+    --shadow-lg:0 30px 60px -20px rgba(0,0,0,.8);
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+
+  body{
+    background:
+      radial-gradient(1200px 700px at 78% -8%, rgba(208,169,78,.10), transparent 60%),
+      radial-gradient(900px 600px at 10% 12%, rgba(159,147,200,.07), transparent 55%),
+      linear-gradient(180deg,#0d0b15 0%,#0b0a12 40%,#08070d 100%);
+    background-attachment:fixed;
+    color:var(--parchment);
+    font-family:'EB Garamond',Georgia,serif;
+    font-size:19px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* faint drifting stars */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(236,227,207,.5), transparent),
+      radial-gradient(1px 1px at 65% 15%, rgba(236,227,207,.35), transparent),
+      radial-gradient(1px 1px at 82% 60%, rgba(208,169,78,.4), transparent),
+      radial-gradient(1px 1px at 42% 78%, rgba(236,227,207,.3), transparent),
+      radial-gradient(1px 1px at 12% 62%, rgba(236,227,207,.25), transparent),
+      radial-gradient(1px 1px at 90% 32%, rgba(236,227,207,.3), transparent);
+    opacity:.7;
+  }
+
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(208,169,78,.28);color:#fff}
+
+  /* ------------------------------------------------ NAV */
+  header.topbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;padding:14px clamp(18px,4vw,54px);
+    background:rgba(11,10,18,.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--edge);
+  }
+  .brand{
+    font-family:'Cinzel',serif;font-weight:600;letter-spacing:.14em;
+    font-size:13px;text-transform:uppercase;color:var(--roy-bright);
+    display:flex;align-items:center;gap:10px;white-space:nowrap;
+  }
+  .brand .sigil{color:var(--om-bright);font-size:16px}
+  nav.jump{display:flex;gap:4px;flex-wrap:wrap}
+  nav.jump a{
+    font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--mist);
+    padding:8px 12px;border-radius:2px;transition:color .25s,background .25s;
+  }
+  nav.jump a:hover{color:var(--parchment)}
+  nav.jump a.active{color:var(--roy-bright);background:rgba(208,169,78,.08)}
+
+  main{position:relative;z-index:1}
+
+  section{padding:clamp(64px,9vw,120px) clamp(18px,5vw,54px);max-width:1180px;margin:0 auto}
+
+  .eyebrow{
+    font-family:'Cinzel',serif;font-size:11px;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--roy);margin-bottom:20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--roy),transparent)}
+
+  h2.section-title{
+    font-family:'Cinzel',serif;font-weight:600;
+    font-size:clamp(28px,4.6vw,46px);line-height:1.1;letter-spacing:.02em;
+    color:var(--parchment);margin-bottom:14px;
+  }
+  .lede{color:var(--mist);font-size:clamp(18px,2vw,21px);max-width:60ch;font-style:italic}
+
+  /* ------------------------------------------------ HERO */
+  .hero{
+    min-height:92vh;display:grid;grid-template-columns:1.15fr .85fr;
+    align-items:center;gap:40px;max-width:1240px;
+    padding-top:clamp(30px,6vw,70px);padding-bottom:clamp(40px,6vw,70px);
+  }
+  .hero-kicker{
+    font-family:'Cinzel',serif;font-size:12px;letter-spacing:.4em;
+    text-transform:uppercase;color:var(--mist);margin-bottom:26px;
+  }
+  h1{
+    font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;
+    font-size:clamp(42px,8vw,86px);line-height:.98;letter-spacing:.01em;
+    background:linear-gradient(180deg,var(--roy-bright) 0%,var(--roy) 45%,#a07d2f 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 2px 30px rgba(208,169,78,.15);margin-bottom:24px;
+  }
+  .hero-sub{color:var(--parchment);font-size:clamp(19px,2.3vw,23px);line-height:1.5;margin-bottom:34px}
+  .hero-sub em{color:var(--om-bright);font-style:italic}
+  .versus{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .camp-chip{
+    font-family:'Cinzel',serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+    padding:9px 16px;border:1px solid;border-radius:2px;font-weight:600;
+  }
+  .camp-chip.roy{color:var(--roy-bright);border-color:rgba(208,169,78,.4);background:rgba(208,169,78,.05)}
+  .camp-chip.om{color:var(--om-bright);border-color:rgba(195,68,82,.4);background:rgba(195,68,82,.05)}
+  .versus .x{font-family:'Cinzel',serif;color:var(--mist-dim);font-size:13px;letter-spacing:.2em}
+
+  /* eclipse */
+  .hero-art{display:flex;justify-content:center;align-items:center}
+  .eclipse{position:relative;width:min(340px,72vw);aspect-ratio:1;display:grid;place-items:center}
+  .eclipse .corona{
+    position:absolute;inset:-14%;border-radius:50%;
+    background:conic-gradient(from 0deg,transparent,rgba(208,169,78,.32),transparent 30%,transparent 55%,rgba(208,169,78,.22),transparent 80%);
+    filter:blur(6px);animation:spin 46s linear infinite;
+  }
+  .eclipse .ring{
+    position:absolute;inset:6%;border-radius:50%;
+    box-shadow:0 0 0 1px rgba(208,169,78,.35),0 0 70px 6px rgba(208,169,78,.28),inset 0 0 40px rgba(208,169,78,.2);
+  }
+  .eclipse .sun{
+    position:absolute;inset:12%;border-radius:50%;
+    background:radial-gradient(circle at 62% 42%,#f6dc92,var(--roy) 55%,#8f6c26 100%);
+    box-shadow:0 0 60px 8px rgba(208,169,78,.45);
+  }
+  .eclipse .moon{
+    position:absolute;inset:12%;border-radius:50%;
+    background:radial-gradient(circle at 40% 40%,#191524,#0a0912 70%);
+    transform:translateX(-16%);
+    box-shadow:inset 12px 0 24px rgba(0,0,0,.7), -6px 0 30px rgba(0,0,0,.6);
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .eclipse{animation:floaty 9s ease-in-out infinite}
+
+  /* ------------------------------------------------ PANELS */
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin-top:38px}
+  .panel{
+    background:linear-gradient(180deg,var(--night-2),var(--night));
+    border:1px solid var(--edge);border-radius:5px;padding:26px 26px 28px;
+    position:relative;overflow:hidden;
+  }
+  .panel::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--roy),transparent 70%)}
+  .panel.om::before{background:linear-gradient(90deg,var(--om),transparent 70%)}
+  .panel h3{
+    font-family:'Cinzel',serif;font-weight:600;font-size:19px;letter-spacing:.04em;
+    color:var(--parchment);margin-bottom:12px;display:flex;align-items:center;gap:12px;
+  }
+  .panel h3 .g{font-size:22px;color:var(--roy)}
+  .panel.om h3 .g{color:var(--om-bright)}
+  .panel p{color:var(--mist);font-size:17px}
+  .panel .big{font-family:'Cinzel',serif;font-size:34px;color:var(--roy-bright);display:block;margin:6px 0 2px}
+
+  ul.clean{list-style:none;margin-top:8px}
+  ul.clean li{position:relative;padding-left:22px;color:var(--mist);margin:7px 0;font-size:17px}
+  ul.clean li::before{content:"◆";position:absolute;left:0;top:1px;color:var(--roy);font-size:11px}
+
+  /* the turn cycle */
+  .cycle{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px}
+  .phase{
+    background:linear-gradient(180deg,var(--night-2),var(--night));
+    border:1px solid var(--edge-soft);border-radius:5px;padding:28px 24px;text-align:center;position:relative;
+    transition:transform .3s var(--ease),border-color .3s;
+  }
+  .phase:hover{transform:translateY(-5px);border-color:var(--edge)}
+  .phase .num{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.3em;color:var(--mist-dim);display:block;margin-bottom:14px}
+  .phase .icon{font-size:34px;display:block;margin-bottom:12px}
+  .phase h4{font-family:'Cinzel',serif;font-weight:600;font-size:20px;letter-spacing:.06em;margin-bottom:10px}
+  .phase p{color:var(--mist);font-size:16px}
+  .phase.nuit .icon{color:var(--neu)}
+  .phase.jour .icon{color:var(--roy-bright)}
+  .phase.conseil .icon{color:var(--om-bright)}
+  .cycle-arrow{display:flex;align-items:center;justify-content:center;color:var(--mist-dim);font-size:22px}
+
+  /* ------------------------------------------------ ROLES */
+  .roles-toolbar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    margin:34px 0 8px;position:sticky;top:60px;z-index:30;
+    padding:14px;background:rgba(13,11,21,.8);backdrop-filter:blur(10px);
+    border:1px solid var(--edge-soft);border-radius:6px;
+  }
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filters button{
+    font-family:'Cinzel',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mist);background:transparent;border:1px solid var(--edge-soft);
+    padding:9px 15px;border-radius:2px;cursor:pointer;transition:all .22s;
+  }
+  .filters button:hover{color:var(--parchment);border-color:var(--edge)}
+  .filters button.on{color:#100e18;font-weight:600}
+  .filters button.on[data-camp="all"]{background:var(--parchment);border-color:var(--parchment)}
+  .filters button.on[data-camp="ombres"]{background:var(--om);border-color:var(--om);color:#fff}
+  .filters button.on[data-camp="royaume"]{background:var(--roy);border-color:var(--roy)}
+  .filters button.on[data-camp="neutre"]{background:var(--neu);border-color:var(--neu);color:#171326}
+
+  .search{position:relative;flex:1;min-width:180px}
+  .search input{
+    width:100%;background:var(--void);border:1px solid var(--edge-soft);border-radius:2px;
+    color:var(--parchment);font-family:'EB Garamond',serif;font-size:16px;
+    padding:10px 14px 10px 38px;outline:none;transition:border-color .22s;
+  }
+  .search input:focus{border-color:var(--roy)}
+  .search input::placeholder{color:var(--mist-dim);font-style:italic}
+  .search .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--mist-dim);font-size:16px}
+  .count{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.16em;color:var(--mist-dim);white-space:nowrap;text-transform:uppercase}
+
+  .roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:22px}
+  .card{
+    background:linear-gradient(180deg,var(--night-2),var(--night));
+    border:1px solid var(--edge-soft);border-left:3px solid var(--roy);
+    border-radius:5px;padding:22px 22px 24px;position:relative;overflow:hidden;
+    transition:transform .3s var(--ease),border-color .3s,box-shadow .3s,opacity .3s;
+    display:flex;flex-direction:column;
+  }
+  .card[data-camp="ombres"]{border-left-color:var(--om)}
+  .card[data-camp="royaume"]{border-left-color:var(--roy)}
+  .card[data-camp="neutre"]{border-left-color:var(--neu)}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--edge)}
+  .card .watermark{
+    position:absolute;right:-6px;bottom:-18px;font-size:96px;line-height:1;opacity:.06;pointer-events:none;
+  }
+  .card[data-camp="ombres"] .watermark{color:var(--om-bright)}
+  .card[data-camp="royaume"] .watermark{color:var(--roy-bright)}
+  .card[data-camp="neutre"] .watermark{color:var(--neu-bright)}
+  .card-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+  .card .glyph{font-size:26px;line-height:1.2}
+  .card[data-camp="ombres"] .glyph{color:var(--om-bright)}
+  .card[data-camp="royaume"] .glyph{color:var(--roy-bright)}
+  .card[data-camp="neutre"] .glyph{color:var(--neu-bright)}
+  .card h3{font-family:'Cinzel',serif;font-weight:600;font-size:19px;letter-spacing:.02em;line-height:1.15}
+  .card .camp-label{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;margin-top:4px}
+  .card[data-camp="ombres"] .camp-label{color:var(--om)}
+  .card[data-camp="royaume"] .camp-label{color:var(--roy)}
+  .card[data-camp="neutre"] .camp-label{color:var(--neu)}
+  .card .power{color:var(--mist);font-size:16.5px;line-height:1.55;position:relative;z-index:1}
+  .card .power strong{color:var(--parchment);font-weight:500}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+  .tag{
+    font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--mist);border:1px solid var(--edge-soft);padding:4px 8px;border-radius:2px;background:rgba(255,255,255,.02);
+  }
+  .card.hidden{display:none}
+  .empty{color:var(--mist-dim);font-style:italic;text-align:center;padding:50px 0;grid-column:1/-1;display:none}
+  .empty.show{display:block}
+
+  /* ------------------------------------------------ NIGHT ORDER */
+  .order-toggle{display:inline-flex;border:1px solid var(--edge);border-radius:3px;overflow:hidden;margin-top:34px}
+  .order-toggle button{
+    font-family:'Cinzel',serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    background:transparent;color:var(--mist);border:none;padding:12px 22px;cursor:pointer;transition:all .25s;
+  }
+  .order-toggle button.on{background:rgba(208,169,78,.14);color:var(--roy-bright)}
+  .order-toggle button:not(.on):hover{color:var(--parchment)}
+
+  .timeline{margin-top:34px;position:relative;padding-left:8px}
+  .timeline::before{content:"";position:absolute;left:20px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,transparent,var(--edge),transparent)}
+  .step{display:flex;gap:20px;padding:14px 0;position:relative;align-items:baseline}
+  .step .dot{
+    flex:0 0 26px;height:26px;border-radius:50%;display:grid;place-items:center;
+    font-family:'Cinzel',serif;font-size:11px;color:var(--roy-bright);
+    background:var(--night-2);border:1px solid var(--edge);position:relative;z-index:1;
+  }
+  .step .body h4{font-family:'Cinzel',serif;font-weight:600;font-size:18px;letter-spacing:.02em;color:var(--parchment)}
+  .step .body p{color:var(--mist);font-size:16px;margin-top:2px}
+  .order-divider{
+    font-family:'Cinzel',serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--neu);
+    margin:22px 0 6px;padding-left:46px;position:relative;
+  }
+  .order-divider::before{content:"◈";position:absolute;left:14px;color:var(--neu)}
+  .order-view{display:none}
+  .order-view.on{display:block}
+
+  .passive-note{
+    margin-top:44px;background:linear-gradient(180deg,rgba(159,147,200,.06),transparent);
+    border:1px solid var(--edge-soft);border-left:3px solid var(--neu);border-radius:5px;padding:24px 26px;
+  }
+  .passive-note h4{font-family:'Cinzel',serif;font-weight:600;font-size:17px;letter-spacing:.04em;color:var(--neu-bright);margin-bottom:8px;display:flex;gap:10px;align-items:center}
+  .passive-note p{color:var(--mist);font-size:16px;margin-bottom:12px}
+  .passive-note .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .passive-note .pill{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;color:var(--parchment);border:1px solid var(--edge-soft);padding:6px 12px;border-radius:2px}
+
+  /* ------------------------------------------------ FOOTER */
+  footer{
+    text-align:center;padding:60px 24px 80px;border-top:1px solid var(--edge-soft);
+    margin-top:40px;color:var(--mist-dim);position:relative;z-index:1;
+  }
+  footer .crest{font-size:24px;color:var(--roy);margin-bottom:14px}
+  footer .t{font-family:'Cinzel',serif;letter-spacing:.2em;text-transform:uppercase;font-size:12px;color:var(--mist)}
+  footer .s{font-style:italic;margin-top:8px;font-size:15px}
+
+  /* ------------------------------------------------ RESPONSIVE */
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;text-align:center}
+    .hero-copy{max-width:none;order:2}
+    .hero-art{order:1}
+    .versus{justify-content:center}
+    .hero-kicker{margin-top:10px}
+    nav.jump{display:none}
+    .cycle{grid-template-columns:1fr}
+    .roles-toolbar{top:56px}
+  }
+  @media(max-width:520px){
+    body{font-size:18px}
+    .roles-toolbar{position:static}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="sigil">☾</span> Les Ombres du Royaume</div>
+  <nav class="jump">
+    <a href="#conflit">Le Conflit</a>
+    <a href="#tour">Le Tour</a>
+    <a href="#roles">Les Rôles</a>
+    <a href="#ordre">Ordre de la Nuit</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <div class="hero-kicker">Grimoire des règles</div>
+      <h1>Les Ombres du Royaume</h1>
+      <p class="hero-sub">Sous la couronne, une menace grandit. Un <em>Roi des Ombres</em> se cache parmi la cour — au Conseil de le démasquer avant que la nuit ne l'emporte.</p>
+      <div class="versus">
+        <span class="camp-chip roy">Le Royaume</span>
+        <span class="x">s'affrontent</span>
+        <span class="camp-chip om">Les Ombres</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="eclipse">
+        <div class="corona"></div>
+        <div class="ring"></div>
+        <div class="sun"></div>
+        <div class="moon"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFLIT -->
+  <section id="conflit">
+    <div class="eyebrow">L'enjeu</div>
+    <h2 class="section-title">Deux camps, une couronne</h2>
+    <p class="lede">Toute la partie se joue autour d'une seule vie : celle du Roi des Ombres.</p>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3><span class="g">♛</span> Le Royaume l'emporte</h3>
+        <p>Le Royaume gagne s'il parvient à éliminer le <strong style="color:var(--parchment)">Roi des Ombres</strong> lors d'un vote du Conseil. S'il est éliminé au Conseil, la victoire est immédiate.</p>
+      </div>
+      <div class="panel om">
+        <h3><span class="g">♚</span> Les Ombres l'emportent</h3>
+        <p>Les Ombres gagnent si le <strong style="color:var(--parchment)">Roi des Ombres</strong> est toujours vivant à la fin de la partie. À elles de brouiller les pistes et de protéger leur souverain.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3><span class="g">◷</span> Durée de la partie</h3>
+        <p>Le nombre de tours dépend du nombre de joueurs :</p>
+        <span class="big">(Joueurs ÷ 3) + 2</span>
+        <ul class="clean">
+          <li>9 joueurs → 5 tours</li>
+          <li>12 joueurs → 6 tours</li>
+          <li>15 joueurs → 7 tours</li>
+        </ul>
+        <p style="margin-top:12px">Si le Roi des Ombres survit au dernier tour, les Ombres remportent la partie.</p>
+      </div>
+      <div class="panel">
+        <h3><span class="g">†</span> La Mort</h3>
+        <p>Un joueur mort n'est pas tout à fait réduit au silence :</p>
+        <ul class="clean">
+          <li>il conserve son camp ;</li>
+          <li>il participe encore aux discussions ;</li>
+          <li>il lui faut l'accord d'un vivant pour parler au Conseil ;</li>
+          <li>il ne peut voter qu'une seule fois après sa mort.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOUR -->
+  <section id="tour">
+    <div class="eyebrow">Le rythme du jeu</div>
+    <h2 class="section-title">Un tour, trois épreuves</h2>
+    <p class="lede">Chaque tour enchaîne la Nuit, le Jour et le Conseil — encore et encore, jusqu'au verdict.</p>
+
+    <div class="cycle">
+      <div class="phase nuit">
+        <span class="num">Phase I</span>
+        <span class="icon">☾</span>
+        <h4>Nuit</h4>
+        <p>Dans le secret, tous les rôles accomplissent leurs actions.</p>
+      </div>
+      <div class="phase jour">
+        <span class="num">Phase II</span>
+        <span class="icon">☀</span>
+        <h4>Jour</h4>
+        <p>On discute librement, on enquête, on échange les informations.</p>
+      </div>
+      <div class="phase conseil">
+        <span class="num">Phase III</span>
+        <span class="icon">⚖</span>
+        <h4>Conseil</h4>
+        <p>Les joueurs votent pour éliminer l'un des leurs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section id="roles">
+    <div class="eyebrow">Le bestiaire des rôles</div>
+    <h2 class="section-title">Les visages de la cour</h2>
+    <p class="lede">Trente rôles, trois allégeances. Filtre par camp ou cherche un pouvoir précis.</p>
+
+    <div class="roles-toolbar">
+      <div class="filters" role="group" aria-label="Filtrer par camp">
+        <button data-camp="all" class="on">Tous</button>
+        <button data-camp="ombres">Ombres</button>
+        <button data-camp="royaume">Royaume</button>
+        <button data-camp="neutre">Neutres</button>
+      </div>
+      <div class="search">
+        <span class="mag" aria-hidden="true">⌕</span>
+        <input type="search" id="roleSearch" placeholder="Chercher un rôle ou un pouvoir…" aria-label="Chercher un rôle">
+      </div>
+      <span class="count" id="roleCount"></span>
+    </div>
+
+    <div class="roles" id="rolesGrid"></div>
+    <div class="empty" id="rolesEmpty">Aucun rôle ne correspond à cette recherche.</div>
+  </section>
+
+  <!-- ORDRE -->
+  <section id="ordre">
+    <div class="eyebrow">Le passage du Maître du Jeu</div>
+    <h2 class="section-title">L'ordre de la nuit</h2>
+    <p class="lede">L'ordre dans lequel le Maître du Jeu réveille les rôles. La Nuit 0 n'a lieu qu'une fois pour distribuer les informations de départ.</p>
+
+    <div class="order-toggle" role="group" aria-label="Choisir la séquence">
+      <button data-order="nuit0" class="on">Nuit 0 — une seule fois</button>
+      <button data-order="chaque">Chaque nuit</button>
+    </div>
+
+    <div class="order-view on" id="view-nuit0"></div>
+    <div class="order-view" id="view-chaque"></div>
+
+    <div class="passive-note">
+      <h4><span>❖</span> Rôles passifs</h4>
+      <p>On ne les réveille jamais : leur pouvoir se déclenche tout seul, au bon moment. Le Maître du Jeu ne les appelle pas dans la nuit.</p>
+      <div class="pills">
+        <span class="pill">Reine des Ombres — à la mort du Roi</span>
+        <span class="pill">Fanatique de l'Ombre — à la mort du Roi</span>
+        <span class="pill">Imposteur — effet permanent</span>
+        <span class="pill">Vierge — sur proposition de vote</span>
+        <span class="pill">Croque-Mort — à sa propre mort</span>
+        <span class="pill">Le Sain — lorsqu'il est désigné</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="crest">☾ ♛ ☀</div>
+  <div class="t">Les Ombres du Royaume</div>
+  <div class="s">« Le Roi vit encore. Cherchez-le dans l'ombre. »</div>
+</footer>
+
+<script>
+/* ---------------------------------------------------- ROLE DATA */
+const ROLES = [
+  // ---------------- OMBRES ----------------
+  { name:"Roi des Ombres", camp:"ombres", glyph:"♚", tags:["Chaque nuit","Clé"],
+    power:"Doit <strong>survivre jusqu'à la fin</strong> de la partie. Chaque nuit, il peut éliminer un joueur. S'il est éliminé lors d'un vote du Conseil, le Royaume remporte immédiatement la partie." },
+  { name:"Reine des Ombres", camp:"ombres", glyph:"♛", tags:["Passif"],
+    power:"Connaît l'identité du Roi des Ombres. S'il est éliminé, elle devient <strong>immédiatement le nouveau Roi</strong>. Le Royaume ne l'apprend qu'à la fin du dernier tour — la partie est alors prolongée de 2 tours." },
+  { name:"Informateur", camp:"ombres", glyph:"✦", tags:["Nuit 0"],
+    power:"Reçoit une liste de <strong>3 rôles absents</strong> de la partie. Il peut les communiquer aux autres Ombres, qui pourront alors prétendre posséder l'un d'eux sans risque d'être contredites." },
+  { name:"Informateur des Ombres", camp:"ombres", glyph:"✧", tags:["Nuit 0"],
+    power:"Reçoit la <strong>liste complète des Ombres</strong> et leurs rôles. Y figure aussi l'Espion, qui apparaît comme une Ombre mais sert le Royaume. Il doit transmettre discrètement ces informations aux Ombres." },
+  { name:"Saboteur", camp:"ombres", glyph:"⚔", tags:["Chaque nuit"],
+    power:"Chaque nuit, choisit un joueur : son pouvoir est <strong>annulé cette nuit</strong>. Si ce joueur devait recevoir une information, elle est remplacée par une fausse information — sans qu'il en soit averti." },
+  { name:"Métamorphe", camp:"ombres", glyph:"◐", tags:["Nuit 0"],
+    power:"Choisit un rôle : jusqu'à la nuit suivante, tous les rôles de vision le verront comme <strong>ce rôle</strong>. Il ne peut pas choisir deux fois le même rôle dans une partie." },
+  { name:"Corrupteur", camp:"ombres", glyph:"☾", tags:["Chaque nuit","2 tentatives"],
+    power:"Chaque nuit, peut désigner un joueur qu'il pense être le Comte (2 tentatives). S'il le trouve, il <strong>récupère tous ses pouvoirs</strong> et le Comte les perd. Après ses deux tentatives, il devient une Ombre classique." },
+  { name:"Fanatique de l'Ombre", camp:"ombres", glyph:"▲", tags:["Passif"],
+    power:"Doit protéger le Roi des Ombres à tout prix. Si le Roi est éliminé par vote alors que le Fanatique est vivant, la durée restante de la partie est <strong>réduite d'un tour</strong>." },
+
+  // ---------------- ROYAUME ----------------
+  { name:"Duc", camp:"royaume", glyph:"♜", tags:["Nuit 0","Vote ×2"],
+    power:"Connaît l'identité de la Comtesse. Son vote compte pour <strong>deux voix</strong> lors des Conseils." },
+  { name:"Comtesse", camp:"royaume", glyph:"♝", tags:["Chaque nuit"],
+    power:"Chaque nuit, désigne un joueur. Réponse <strong>positive</strong> s'il possède l'un de ces rôles : Reine des Ombres, Informateur, Corrupteur ou Saboteur. Sinon, réponse négative." },
+  { name:"Garde", camp:"royaume", glyph:"❖", tags:["Chaque nuit"],
+    power:"Chaque nuit, protège un joueur qui <strong>ne peut pas être éliminé</strong> cette nuit. Il ne peut ni se protéger lui-même, ni protéger la même personne deux nuits de suite." },
+  { name:"Exécuteur", camp:"royaume", glyph:"⚑", tags:["Une fois"],
+    power:"<strong>Une seule fois</strong> dans la partie, l'Exécuteur peut éliminer un joueur durant la nuit." },
+  { name:"Voyant", camp:"royaume", glyph:"◉", tags:["Chaque nuit"],
+    power:"Chaque nuit, choisit deux joueurs et apprend <strong>si au moins une Ombre</strong> se trouve parmi eux." },
+  { name:"Docteur", camp:"royaume", glyph:"✚", tags:["Chaque nuit"],
+    power:"Chaque nuit, apprend <strong>combien de joueurs</strong> ont reçu une fausse information, et peut demander si un joueur précis en a reçu une. Seul capable de détecter le véritable état de l'Ivrogne." },
+  { name:"Faucheuse", camp:"royaume", glyph:"✠", tags:["Chaque nuit"],
+    power:"Chaque nuit, découvre le <strong>rôle du joueur éliminé</strong> lors du Conseil précédent." },
+  { name:"Dresseur de Renards", camp:"royaume", glyph:"⋔", tags:["Chaque nuit"],
+    power:"Chaque nuit, apprend <strong>combien d'Ombres</strong> se trouvent directement à sa gauche et à sa droite. Les joueurs morts ne comptent pas." },
+  { name:"Agent de Sécurité", camp:"royaume", glyph:"⌖", tags:["Chaque nuit"],
+    power:"Chaque nuit, apprend à quel <strong>moment approximatif</strong> (à ~5 rôles près) le Maître du Jeu est passé voir un joueur — de quoi estimer la nature de son rôle." },
+  { name:"Inquisiteur", camp:"royaume", glyph:"⚖", tags:["Nuit 0","Chaque nuit"],
+    power:"Reçoit 3 noms, dont obligatoirement le Fanatique de l'Ombre ou le Fanatique Fou. Chaque nuit, il peut désigner un <strong>Fanatique</strong> : s'il a raison, il l'élimine et reçoit une nouvelle liste tant qu'il en reste." },
+  { name:"Archiviste", camp:"royaume", glyph:"▤", tags:["Nuit 0"],
+    power:"Reçoit les noms de <strong>deux joueurs</strong> : l'un appartient au Royaume, l'autre aux Ombres." },
+  { name:"Enquêteur", camp:"royaume", glyph:"⌕", tags:["Nuit 0"],
+    power:"Reçoit un <strong>rôle des Ombres</strong> (hors Roi) et deux noms de joueurs — l'un des deux possède ce rôle." },
+  { name:"Lavandière", camp:"royaume", glyph:"✽", tags:["Nuit 0"],
+    power:"Reçoit un <strong>rôle du Royaume</strong> et deux noms de joueurs — l'un des deux possède ce rôle." },
+  { name:"Cuistot", camp:"royaume", glyph:"◈", tags:["Nuit 0"],
+    power:"Apprend au départ <strong>combien de paires d'Ombres</strong> sont assises côte à côte dans l'ordre de distribution des rôles." },
+  { name:"Croque-Mort", camp:"royaume", glyph:"†", tags:["À la mort"],
+    power:"Lorsqu'il meurt, il choisit un joueur et <strong>découvre son rôle</strong> immédiatement. Il peut ensuite révéler cette information au Royaume." },
+  { name:"Vierge", camp:"royaume", glyph:"✿", tags:["Passif","Vote"],
+    power:"Si un joueur propose officiellement son élimination au Conseil, ce joueur est <strong>immédiatement éliminé</strong> — sauf s'il s'agit du Courtiseur (ils deviennent alors liés). Elle peut aussi accorder un double vote à un autre joueur." },
+  { name:"Ivrogne", camp:"royaume", glyph:"◍", tags:["Nuit 0"],
+    power:"Croit posséder un autre rôle et reçoit les informations correspondantes — mais elles sont <strong>toujours fausses</strong>. Il apparaît comme ce rôle aux yeux des visions. Seul le Docteur perce son état." },
+  { name:"Imposteur", camp:"royaume", glyph:"◆", tags:["Passif"],
+    power:"Apparaît comme une <strong>Ombre</strong> à certains pouvoirs de vision. Son but : gagner la confiance des Ombres pour récolter des informations sur leur organisation." },
+
+  // ---------------- NEUTRES ----------------
+  { name:"Courtiseur", camp:"neutre", glyph:"♦", tags:["Nuit 0"],
+    power:"Doit identifier le <strong>Duc</strong> (plusieurs tentatives). S'il le trouve, il prend sa place. Sinon, il peut proposer l'élimination de la Vierge : ils deviennent alors liés. S'il n'obtient rien avant la fin, il perd." },
+  { name:"Fanatique Fou", camp:"neutre", glyph:"⁂", tags:["Nuit 0"],
+    power:"Reçoit le nom de <strong>deux Ombres</strong> et doit en faire éliminer une au Conseil. S'il réussit, il devient Fanatique de l'Ombre et rejoint les Ombres. Sinon, il perd." },
+  { name:"Suiveur", camp:"neutre", glyph:"⇉", tags:["Nuit 0"],
+    power:"Choisit un joueur au départ : il doit <strong>voter comme lui</strong> ou s'abstenir. S'il reçoit un vote contre lui, sa condition de victoire change. Respecter sa contrainte jusqu'au bout le fait gagner avec le camp correspondant." },
+  { name:"Le Sain", camp:"neutre", glyph:"○", tags:["Passif"],
+    power:"Commence dans le Royaume. Le premier à proposer son élimination <strong>perd son pouvoir</strong> — que Le Sain récupère la nuit suivante, rejoignant le camp de ce joueur. S'il n'est jamais proposé, il perd automatiquement." },
+];
+
+const CAMP_LABEL = { ombres:"Les Ombres", royaume:"Le Royaume", neutre:"Neutre" };
+
+/* ---------------------------------------------------- RENDER CARDS */
+const grid = document.getElementById('rolesGrid');
+grid.innerHTML = ROLES.map(r => `
+  <article class="card" data-camp="${r.camp}" data-search="${(r.name+' '+r.power).toLowerCase().replace(/<[^>]+>/g,'')}">
+    <span class="watermark" aria-hidden="true">${r.glyph}</span>
+    <div class="card-head">
+      <span class="glyph" aria-hidden="true">${r.glyph}</span>
+      <div>
+        <h3>${r.name}</h3>
+        <div class="camp-label">${CAMP_LABEL[r.camp]}</div>
+      </div>
+    </div>
+    <p class="power">${r.power}</p>
+    <div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+  </article>
+`).join('');
+
+/* ---------------------------------------------------- FILTER + SEARCH */
+const cards = [...grid.querySelectorAll('.card')];
+const countEl = document.getElementById('roleCount');
+const emptyEl = document.getElementById('rolesEmpty');
+const searchEl = document.getElementById('roleSearch');
+const filterBtns = [...document.querySelectorAll('.filters button')];
+let activeCamp = 'all';
+
+function applyFilters(){
+  const q = searchEl.value.trim().toLowerCase();
+  let visible = 0;
+  cards.forEach(c => {
+    const campOk = activeCamp === 'all' || c.dataset.camp === activeCamp;
+    const textOk = !q || c.dataset.search.includes(q);
+    const show = campOk && textOk;
+    c.classList.toggle('hidden', !show);
+    if(show) visible++;
+  });
+  countEl.textContent = visible + (visible > 1 ? ' rôles' : ' rôle');
+  emptyEl.classList.toggle('show', visible === 0);
+}
+
+filterBtns.forEach(btn => btn.addEventListener('click', () => {
+  filterBtns.forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  activeCamp = btn.dataset.camp;
+  applyFilters();
+}));
+searchEl.addEventListener('input', applyFilters);
+applyFilters();
+
+/* ---------------------------------------------------- NIGHT ORDER */
+const NUIT0 = [
+  ["Informateur","Recevoir les 3 rôles absents de la partie."],
+  ["Informateur des Ombres","Recevoir la liste des Ombres et leurs rôles."],
+  ["Duc","Recevoir l'identité de la Comtesse."],
+  ["Archiviste","Recevoir 2 noms : un du Royaume, un des Ombres."],
+  ["Cuistot","Annoncer le nombre de paires d'Ombres voisines."],
+  ["Enquêteur","Donner un rôle des Ombres et les 2 joueurs qui le cachent."],
+  ["Lavandière","Donner un rôle du Royaume et les 2 joueurs qui le cachent."],
+  ["Fanatique Fou","Donner les 2 Ombres qu'il doit faire éliminer."],
+  ["Suiveur","Lui demander quel joueur il souhaite suivre."],
+  ["Courtiseur","Lui expliquer sa condition de victoire."],
+  ["Ivrogne","Lui annoncer le faux rôle qu'il croit posséder."],
+  ["Métamorphe","Lui demander quel rôle il copie pour toute la partie."],
+];
+const CHAQUE = [
+  ["Corrupteur","Souhaite-t-il utiliser une tentative pour trouver le Duc ?"],
+  ["Saboteur","Quel joueur souhaite-t-il saboter ?"],
+  ["Garde","Qui protège-t-il cette nuit ?"],
+  ["Exécuteur","Veut-il utiliser son exécution unique ?"],
+  ["Roi des Ombres","Souhaite-t-il éliminer quelqu'un ?"],
+  ["__DIV__","Distribution des informations"],
+  ["Comtesse","Quel joueur veut-elle inspecter ?"],
+  ["Dresseur de Renards","Lui donner le nombre d'Ombres autour de lui."],
+  ["Voyant","Quels 2 joueurs veut-il comparer ?"],
+  ["Docteur","Nombre de fausses infos + un joueur à vérifier."],
+  ["Agent de Sécurité","Lui donner l'heure approximative du passage du MJ."],
+  ["Inquisiteur","Souhaite-t-il exécuter un suspect fanatique ?"],
+  ["Faucheuse","Lui révéler le rôle du dernier joueur éliminé."],
+];
+
+function renderOrder(list, el){
+  let html = ''; let n = 0;
+  list.forEach(([a,b]) => {
+    if(a === '__DIV__'){ html += `<div class="order-divider">${b}</div>`; return; }
+    n++;
+    html += `
+      <div class="step">
+        <span class="dot">${n}</span>
+        <div class="body"><h4>${a}</h4><p>${b}</p></div>
+      </div>`;
+  });
+  el.innerHTML = html;
+}
+renderOrder(NUIT0, document.getElementById('view-nuit0'));
+renderOrder(CHAQUE, document.getElementById('view-chaque'));
+
+const orderBtns = [...document.querySelectorAll('.order-toggle button')];
+orderBtns.forEach(btn => btn.addEventListener('click', () => {
+  orderBtns.forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('view-nuit0').classList.toggle('on', btn.dataset.order === 'nuit0');
+  document.getElementById('view-chaque').classList.toggle('on', btn.dataset.order === 'chaque');
+}));
+
+/* ---------------------------------------------------- SCROLL SPY */
+const navLinks = [...document.querySelectorAll('nav.jump a')];
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const spy = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const id = '#' + e.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+    }
+  });
+}, { rootMargin:'-45% 0px -50% 0px' });
+sections.forEach(s => s && spy.observe(s));
+</script>
+</body>
+</html>
